@@ -1,0 +1,171 @@
+openapi: 3.0.0
+info:
+  title: Task Manager API
+  version: 1.0.0
+  description: API per gestione utenti e task, con autenticazione JWT.
+
+servers:
+  - url: http://localhost:3000
+    description: Server locale
+
+paths:
+  /auth/register:
+    post:
+      summary: Registrazione utente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 6
+                nome:
+                  type: string
+      responses:
+        '201':
+          description: Utente creato con successo
+        '409':
+          description: Email già presente
+
+  /auth/login:
+    post:
+      summary: Login utente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login avvenuto, restituisce token JWT
+        '401':
+          description: Credenziali non valide
+
+  /tasks:
+    get:
+      summary: Ottieni tutti i task dell'utente
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista di task
+    post:
+      summary: Crea un nuovo task
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                completed:
+                  type: boolean
+      responses:
+        '201':
+          description: Task creato con successo
+
+  /tasks/{id}:
+    patch:
+      summary: Modifica un task esistente
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                completed:
+                  type: boolean
+      responses:
+        '200':
+          description: Task aggiornato
+        '404':
+          description: Task non trovato o non appartiene all'utente
+    delete:
+      summary: Elimina un task
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Task eliminato con successo
+        '404':
+          description: Task non trovato o non appartiene all'utente
+
+  /tasks/{id}/upload:
+    post:
+      summary: Carica un'immagine per un task
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Immagine caricata con successo
+        '404':
+          description: Task non trovato o non appartiene all'utente
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
