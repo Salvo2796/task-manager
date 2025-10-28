@@ -4,7 +4,8 @@ const userSchema = new mongoose.Schema(
     {
         email: {type:String, required:true, trim:true, match: /.+\@.+\..+/, unique: true, lowercase: true},
         passwordHash: {type:String, required:true},
-        nome:{type:String, trim:true}
+        nome:{type:String, trim:true},
+        role: {type: String, enum: ["user", "admin"]}
     }, 
     {
         timestamps:true

@@ -11,9 +11,13 @@ const rateLimit = require("express-rate-limit");
 const morgan = require("morgan");             // Logger richieste HTTP
 const logger = require("./utils/logger");     
 const errorHandler = require("./middleware/errorHandler"); // Middleware gestione errori
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
+const spec = YAML.load("./docs/openapi.yaml");
 
 const authRoutes = require('./routes/auth.routes'); 
 const taskRoutes = require('./routes/task.routes');
+const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
 
@@ -43,6 +47,7 @@ app.use(morgan("combined", {
 }));
 
 
+
 // ==============================
 // 3️⃣ Servire file statici
 // ==============================
@@ -59,12 +64,14 @@ const authLimiter = rateLimit({
   legacyHeaders: false      
 });
 
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(spec));
 
 // ==============================
 // 5️⃣ Rotte principali
 // ==============================
 app.use('/auth', authLimiter, authRoutes); // Rotte autenticazione con rate limiter
 app.use('/tasks', taskRoutes);             // Rotte task
+app.use("/admin", adminRoutes);
 
 
 // ==============================

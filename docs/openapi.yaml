@@ -2,73 +2,103 @@ openapi: 3.0.0
 info:
   title: Task Manager API
   version: 1.0.0
-  description: API per gestione utenti e task, con autenticazione JWT.
-
+  description: >
+    API per la gestione di task personali.  
+    Permette di registrarsi, fare login, creare, modificare e cancellare task.
 servers:
   - url: http://localhost:3000
     description: Server locale
+  - url: https://task-manager-1-kajy.onrender.com
+    description: Server online (Render)
+
+tags:
+  - name: Auth
+    description: Operazioni di autenticazione
+  - name: Tasks
+    description: Gestione dei task personali
 
 paths:
   /auth/register:
     post:
-      summary: Registrazione utente
+      tags: [Auth]
+      summary: Registra un nuovo utente
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required:
-                - email
-                - password
+              required: [nome, email, password]
               properties:
+                nome:
+                  type: string
+                  example: Mario Rossi
                 email:
                   type: string
                   format: email
+                  example: mario@example.com
                 password:
                   type: string
-                  minLength: 6
-                nome:
-                  type: string
+                  format: password
+                  example: password123
       responses:
-        '201':
+        "201":
           description: Utente creato con successo
-        '409':
-          description: Email già presente
+        "400":
+          description: Errore nella richiesta
 
   /auth/login:
     post:
-      summary: Login utente
+      tags: [Auth]
+      summary: Effettua il login e restituisce un token JWT
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required:
-                - email
-                - password
+              required: [email, password]
               properties:
                 email:
                   type: string
-                  format: email
+                  example: mario@example.com
                 password:
                   type: string
+                  example: password123
       responses:
-        '200':
-          description: Login avvenuto, restituisce token JWT
-        '401':
+        "200":
+          description: Login effettuato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        "401":
           description: Credenziali non valide
 
   /tasks:
     get:
-      summary: Ottieni tutti i task dell'utente
+      tags: [Tasks]
+      summary: Ottiene la lista dei task dell'utente autenticato
       security:
         - bearerAuth: []
       responses:
-        '200':
-          description: Lista di task
+        "200":
+          description: Lista dei task
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+        "401":
+          description: Token mancante o non valido
+
     post:
+      tags: [Tasks]
       summary: Crea un nuovo task
       security:
         - bearerAuth: []
@@ -77,23 +107,17 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - title
-              properties:
-                title:
-                  type: string
-                description:
-                  type: string
-                completed:
-                  type: boolean
+              $ref: "#/components/schemas/TaskInput"
       responses:
-        '201':
+        "201":
           description: Task creato con successo
+        "400":
+          description: Dati non validi
 
   /tasks/{id}:
     patch:
-      summary: Modifica un task esistente
+      tags: [Tasks]
+      summary: Aggiorna un task esistente
       security:
         - bearerAuth: []
       parameters:
@@ -107,20 +131,15 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                title:
-                  type: string
-                description:
-                  type: string
-                completed:
-                  type: boolean
+              $ref: "#/components/schemas/TaskInput"
       responses:
-        '200':
+        "200":
           description: Task aggiornato
-        '404':
-          description: Task non trovato o non appartiene all'utente
+        "404":
+          description: Task non trovato
+
     delete:
+      tags: [Tasks]
       summary: Elimina un task
       security:
         - bearerAuth: []
@@ -131,39 +150,45 @@ paths:
           schema:
             type: string
       responses:
-        '204':
-          description: Task eliminato con successo
-        '404':
-          description: Task non trovato o non appartiene all'utente
-
-  /tasks/{id}/upload:
-    post:
-      summary: Carica un'immagine per un task
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  format: binary
-      responses:
-        '200':
-          description: Immagine caricata con successo
-        '404':
-          description: Task non trovato o non appartiene all'utente
+        "200":
+          description: Task eliminato
+        "404":
+          description: Task non trovato
 
 components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 671d5f87a23b56c34a1b9f72
+        title:
+          type: string
+          example: Studiare Node.js
+        description:
+          type: string
+          example: Finire il modulo su Express e JWT
+        completed:
+          type: boolean
+          example: false
+        user:
+          type: string
+          example: 671d5f87a23b56c34a1b9f72
+
+    TaskInput:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Fare la spesa
+        description:
+          type: string
+          example: Latte, uova, pane
+        completed:
+          type: boolean
+          example: false
+
   securitySchemes:
     bearerAuth:
       type: http

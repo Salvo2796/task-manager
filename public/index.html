@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f6fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #2563eb;
+            color: white;
+            padding: 16px;
+            text-align: center;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 6px;
+            color: #2563eb;
+        }
+
+        form {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        textarea,
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            margin-top: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1e4ed8;
+        }
+
+        .task {
+            background-color: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .task img {
+            max-width: 120px;
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Task Manager</h1>
+        <p>Registrati, accedi e gestisci i tuoi task</p>
+    </header>
+
+    <main>
+        <!-- 🔹 Registrazione -->
+        <section>
+            <h2>Registrazione</h2>
+            <form>
+                <label>Email</label>
+                <input id="email-register" type="email" placeholder="Inserisci la tua email" required>
+
+                <label>Password</label>
+                <input id="password-register" type="password" placeholder="Minimo 6 caratteri" required>
+
+                <label>Nome</label>
+                <input id="nome-register" type="text" placeholder="Il tuo nome">
+
+                <button id="btn-register" type="submit">Registrati</button>
+            </form>
+        </section>
+
+        <!-- 🔹 Login -->
+        <section>
+            <h2>Login</h2>
+            <form>
+                <label>Email</label>
+                <input id="email-login" type="email" placeholder="Email" required>
+
+                <label>Password</label>
+                <input id="password-login" type="password" placeholder="Password" required>
+
+                <button id="btn-login" type="submit">Accedi</button>
+            </form>
+        </section>
+
+        <!-- 🔹 Creazione Task -->
+        <section>
+            <h2>Crea nuovo Task</h2>
+            <form id="form-create-task">
+                <label for="titolo-create">Titolo</label>
+                <input id="titolo-create" type="text" placeholder="Titolo del task" required>
+
+                <label for="descrizione-create">Descrizione</label>
+                <textarea id="descrizione-create" rows="3" placeholder="Descrizione del task"></textarea>
+
+                <label for="completato-create">
+                    <input id="completato-create" type="checkbox">
+                    Completato
+                </label>
+
+                <button id="btn-createTask" type="submit">Crea Task</button>
+            </form>
+        </section>
+
+
+        <!-- 🔹 Elenco Task -->
+        <section>
+            <h2>I miei Task</h2>
+            <button id="mostra"> Mostra task</button>
+            <div id="task"></div>
+        </section>
+
+        <section>
+            <div id="div-update" style="display: none;">
+                <h3>Aggiorna Task</h3>
+                <input id="id_task" type="hidden">
+                <label>Titolo</label>
+                <input id="title-update" type="text">
+
+                <label>Descrizione</label>
+                <input id="description-update" type="text">
+
+                <label>Completato (true/false)</label>
+                <input id="completed-update" type="text">
+
+                <button id="btn-update">Aggiorna</button>
+            </div>
+        </section>
+
+
+        <!-- 🔹 Upload File -->
+        <section>
+            <h2>Carica un’immagine</h2>
+            <form>
+                <label>ID del Task</label>
+                <input type="text" placeholder="Inserisci l'ID del task">
+
+                <label>Seleziona file</label>
+                <input type="file" accept="image/*">
+
+                <button type="submit">Carica</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        &copy; 2025 Task Manager – Demo Frontend Statico
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>
