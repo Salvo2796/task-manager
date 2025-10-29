@@ -9,7 +9,7 @@ const router = express.Router();
 
 const taskSchema = Joi.object({
   title: Joi.string().required(),
-  description: Joi.string(),
+  description: Joi.string().allow(),
   completed: Joi.boolean().default(false),
 });
 

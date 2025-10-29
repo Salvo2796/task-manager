@@ -2,6 +2,8 @@ const joi = require("joi");
 
 module.exports = function validate(schema) {
     return (req, res, next) => {
+        console.log("Dati ricevuti:", req.body);
+
         const {error, value} = schema.validate(req.body, {abortEarly: false});
 
         if(error) {
