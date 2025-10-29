@@ -1,5 +1,4 @@
-const { deleteTask } = require("../service/task.service");
-
+//REGISTRAZIONE
 const btnRegister = document.getElementById("btn-register");
 
 btnRegister.addEventListener("click", async () => {
@@ -29,6 +28,7 @@ btnRegister.addEventListener("click", async () => {
 
 });
 
+//LOGIN
 const btnLogin = document.getElementById("btn-login");
 
 btnLogin.addEventListener("click", async () => {
@@ -61,15 +61,17 @@ btnLogin.addEventListener("click", async () => {
     }
 });
 
-
+//SALVA TOKEN
 function saveToken(token) {
     localStorage.setItem("token", token);
 }
 
+//CARICA TOKEN
 function loadToken() {
     return localStorage.getItem("token")
 }
 
+//CREAZIONE TASK
 const btnCreateTask = document.getElementById("btn-createTask");
 const taskDiv = document.getElementById("task");
 
@@ -104,6 +106,7 @@ btnCreateTask.addEventListener("click", async () => {
     }
 });
 
+//Fetch dei tasks
 async function loadTask() {
     try {
         const token = loadToken();
@@ -134,6 +137,7 @@ async function loadTask() {
     }
 }
 
+//Button per mostrare i tasks
 const btnRender = document.getElementById("mostra");
 
 btnRender.addEventListener("click", async () => {
@@ -141,6 +145,7 @@ btnRender.addEventListener("click", async () => {
     renderTask(tasks);
 });
 
+//Funzione per far comparire tutti i tasks
 function renderTask(tasks) {
     const container = document.getElementById("task");
     container.innerHTML = "";
@@ -184,6 +189,7 @@ function renderTask(tasks) {
 
 }
 
+// Funzione elimina
 async function deleteTask(id) {
     try {
         const token = loadToken();
@@ -207,6 +213,7 @@ async function deleteTask(id) {
     }
 }
 
+// Funzione per far comparire il FormaUpdate
 function renderFormUpdate(t) {
     document.getElementById("div-update").style.display = "block";
       document.getElementById("id_task").value = t._id;

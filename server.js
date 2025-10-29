@@ -1,6 +1,5 @@
-// ==============================
-// 1️⃣ Import e configurazioni
-// ==============================
+// Import e configurazioni
+
 const express = require('express');
 const connectDb = require("./config/db")
 const cors = require('cors');
@@ -21,21 +20,26 @@ const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
 
+//Connessione a MongoDb
 connectDb();
-// ==============================
-// 2️⃣ Middleware globali
-// ==============================
+
+// Middleware globali
+
 app.use(helmet()); // Sicurezza HTTP headers
 
 // Configurazione CORS
-const allowed = ['https://tuo-frontend.it', 'http://localhost:5173'];
+const allowed = [
+    'http://localhost:5173',           // sviluppo locale
+    'https://<tuo-frontend-golive>'   // frontend live
+];
 app.use(cors({
-  origin: (origin, cb) => {
-    if (!origin || allowed.includes(origin)) return cb(null, true);
-    cb(new Error('Not allowed by CORS'));
-  },
-  credentials: true
+    origin: (origin, cb) => {
+        if (!origin || allowed.includes(origin)) return cb(null, true);
+        cb(new Error('Not allowed by CORS'));
+    },
+    credentials: true
 }));
+
 
 app.use(express.json()); // Parse JSON nel body delle richieste
 
@@ -48,15 +52,13 @@ app.use(morgan("combined", {
 
 
 
-// ==============================
-// 3️⃣ Servire file statici
-// ==============================
+// Servire file statici
+
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads'))); // immagini task
 
 
-// ==============================
-// 4️⃣ Rate limiter per autenticazione
-// ==============================
+// Rate limiter per autenticazione
+
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minuti
   max: 100,                 // max 100 richieste/ IP / finestra
@@ -66,17 +68,17 @@ const authLimiter = rateLimit({
 
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(spec));
 
-// ==============================
-// 5️⃣ Rotte principali
-// ==============================
+
+// Rotte principali
+
 app.use('/auth', authLimiter, authRoutes); // Rotte autenticazione con rate limiter
 app.use('/tasks', taskRoutes);             // Rotte task
-app.use("/admin", adminRoutes);
+app.use("/admin", adminRoutes);            // Rotte admin
 
 
-// ==============================
-// 6️⃣ Rotte di salute e root
-// ==============================
+
+// Rotte di salute e root
+
 app.get('/task/health', (req, res) => {
   res.json({ status: 'ok' }); 
 });
@@ -86,23 +88,20 @@ app.get('/', (req, res) => {
 });
 
 
-// ==============================
-// 7️⃣ Middleware 404
-// ==============================
+// Middleware 404
+
 app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
 });
 
 
-// ==============================
-// 8️⃣ Middleware gestione errori
-// ==============================
+// Middleware gestione errori
+
 app.use(errorHandler); // Deve avere 4 argomenti (err, req, res, next)
 
 
-// ==============================
-// 9️⃣ Avvio server
-// ==============================
+// Avvio server
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server avviato su http://localhost:${PORT}`);
