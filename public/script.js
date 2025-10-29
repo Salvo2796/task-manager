@@ -85,7 +85,7 @@ const taskDiv = document.getElementById("task");
 
 btnCreateTask.addEventListener("click", async (event) => {
     event.preventDefault();
-    const title = document.getElementById("titolo.create").value.trim();
+    const title = document.getElementById("titolo-create").value.trim();
     const description = document.getElementById("descrizione-create").value.trim();
     const completed = document.getElementById("completato-create").checked;
 
@@ -108,7 +108,7 @@ btnCreateTask.addEventListener("click", async (event) => {
 
         } else {
             const err = await res.json().catch(() => ({ message: res.statusText }));
-            showToast('Errore creazione: ' + (err.message || JSON.stringify(err)));
+            alert('Errore creazione: ' + (err.message || JSON.stringify(err)));
         }
     } catch (e) {
         alert("Errore: " + e.message)
@@ -130,29 +130,29 @@ async function loadTask() {
 
         if (res.ok) {
             const data = await res.json();
-            renderTask(data.task);
+            return data.task; // ritorna l’array di task
         } else {
             let err;
-            try {
-                err = await res.json();
-            } catch {
-                err = { message: res.statusText };
-            }
+            try { err = await res.json(); } catch { err = { message: res.statusText }; }
             alert('Errore caricamento: ' + (err.message || JSON.stringify(err)));
+            return [];
         }
 
     } catch (e) {
-        alert("Errore: " + e.message)
+        alert("Errore: " + e.message);
+        return [];
     }
 }
+
 
 //Button per mostrare i tasks
 const btnRender = document.getElementById("mostra");
 
 btnRender.addEventListener("click", async () => {
     const tasks = await loadTask();
-    renderTask(tasks);
+    renderTask(tasks); // ora tasks è definito
 });
+
 
 //Funzione per far comparire tutti i tasks
 function renderTask(tasks) {

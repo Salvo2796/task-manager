@@ -9,13 +9,13 @@ const router = express.Router();
 
 const taskSchema = Joi.object({
   title: Joi.string().required(),
-  description: Joi.string().allow(),
+  description: Joi.string().trim().allow(),
   completed: Joi.boolean().default(false),
 });
 
 const updateTaskSchema = Joi.object({
   title: Joi.string(),          
-  description: Joi.string(),
+  description: Joi.string().trim().allow(),
   completed: Joi.boolean()
 });
 
