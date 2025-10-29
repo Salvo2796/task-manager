@@ -10,7 +10,7 @@ btnRegister.addEventListener("click", async () => {
         return alert("Email e Password obbligatorie!")
     }
     try {
-        const res = await fetch("http://localhost:3000/auth/register", {
+        const res = await fetch("https://task-manager-yyyj.onrender.com/auth/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password, nome })
@@ -40,7 +40,7 @@ btnLogin.addEventListener("click", async () => {
     }
 
     try {
-        const res = await fetch("http://localhost:3000/auth/login", {
+        const res = await fetch("https://task-manager-yyyj.onrender.com/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
@@ -85,7 +85,7 @@ btnCreateTask.addEventListener("click", async () => {
     try {
         const token = loadToken();
 
-        const res = await fetch("http://localhost:3000/tasks", {
+        const res = await fetch("https://task-manager-yyyj.onrender.com/tasks", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -111,7 +111,7 @@ async function loadTask() {
     try {
         const token = loadToken();
 
-        const res = await fetch("http://localhost:3000/tasks", {
+        const res = await fetch("https://task-manager-yyyj.onrender.com/tasks", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -193,7 +193,7 @@ function renderTask(tasks) {
 async function deleteTask(id) {
     try {
         const token = loadToken();
-        const res = await fetch(`http://localhost:3000/tasks/${id}`, {
+        const res = await fetch(`https://task-manager-yyyj.onrender.com/tasks/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -227,7 +227,7 @@ async function updateTask(id, updatedTask) {
   try {
     const token = loadToken();
 
-    const res = await fetch(`http://localhost:3000/tasks/${id}`, {
+    const res = await fetch(`https://task-manager-yyyj.onrender.com/tasks/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
