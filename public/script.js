@@ -1,19 +1,24 @@
 //REGISTRAZIONE
 const btnRegister = document.getElementById("btn-register");
 
-btnRegister.addEventListener("click", async () => {
+btnRegister.addEventListener("click", async (event) => {
+    event.preventDefault();
     const email = document.getElementById("email-register").value.trim();
     const password = document.getElementById("password-register").value.trim();
     const nome = document.getElementById("nome-register").value.trim();
+    const role = document.getElementById("role-register").value;
 
     if (!email || !password) {
         return alert("Email e Password obbligatorie!")
     }
+
+    console.log({ email, password, nome, role });
+
     try {
         const res = await fetch("https://task-manager-yyyj.onrender.com/auth/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password, nome })
+            body: JSON.stringify({ email, password, nome, role })
         });
 
         if (res.status === 201) {
@@ -31,7 +36,8 @@ btnRegister.addEventListener("click", async () => {
 //LOGIN
 const btnLogin = document.getElementById("btn-login");
 
-btnLogin.addEventListener("click", async () => {
+btnLogin.addEventListener("click", async (event) => {
+    event.preventDefault();
     const email = document.getElementById("email-login").value.trim();
     const password = document.getElementById("password-login").value.trim();
 
@@ -75,7 +81,8 @@ function loadToken() {
 const btnCreateTask = document.getElementById("btn-createTask");
 const taskDiv = document.getElementById("task");
 
-btnCreateTask.addEventListener("click", async () => {
+btnCreateTask.addEventListener("click", async (event) => {
+    event.preventDefault();
     const title = document.getElementById("titolo.create").value.trim();
     const description = document.getElementById("descrizione-create").value.trim();
     const completed = document.getElementById("completato-create").checked;
