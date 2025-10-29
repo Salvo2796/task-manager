@@ -29,16 +29,19 @@ app.use(helmet()); // Sicurezza HTTP headers
 
 // Configurazione CORS
 const allowed = [
-    'http://localhost:5173',           // sviluppo locale
-    'https://<tuo-frontend-golive>'   // frontend live
+  'http://127.0.0.1:5500',   // live server locale
+  'http://localhost:5173',    // vite o altro dev server
+  'https://task-manager-yyyj.onrender.com' // il tuo backend su Render
 ];
+
 app.use(cors({
-    origin: (origin, cb) => {
-        if (!origin || allowed.includes(origin)) return cb(null, true);
-        cb(new Error('Not allowed by CORS'));
-    },
-    credentials: true
+  origin: (origin, cb) => {
+    if (!origin || allowed.includes(origin)) return cb(null, true);
+    cb(new Error('Not allowed by CORS'));
+  },
+  credentials: true
 }));
+
 
 
 app.use(express.json()); // Parse JSON nel body delle richieste
