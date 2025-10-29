@@ -1,18 +1,19 @@
-//REGISTRAZIONE
-const btnRegister = document.getElementById("btn-register");
+// REGISTRAZIONE
+const formRegister = document.getElementById("form-register");
 
-btnRegister.addEventListener("click", async (event) => {
-    event.preventDefault();
+formRegister.addEventListener("submit", async (event) => {
+    event.preventDefault(); // Previene il submit normale
+
     const email = document.getElementById("email-register").value.trim();
     const password = document.getElementById("password-register").value.trim();
     const nome = document.getElementById("nome-register").value.trim();
     const role = document.getElementById("role-register").value;
 
     if (!email || !password) {
-        return alert("Email e Password obbligatorie!")
+        return alert("Email e Password obbligatorie!");
     }
 
-    console.log({ email, password, nome, role });
+    console.log("Dati da inviare:", { email, password, nome, role });
 
     try {
         const res = await fetch("https://task-manager-yyyj.onrender.com/auth/register", {
@@ -21,16 +22,17 @@ btnRegister.addEventListener("click", async (event) => {
             body: JSON.stringify({ email, password, nome, role })
         });
 
-        if (res.status === 201) {
-            alert("Registazione avvenuta");
-        } else {
-            const err = await res.json().catch(() => ({ message: res.statusText }));
-            alert('Errore registrazione: ' + (err.message || JSON.stringify(err)));
-        }
-    } catch (e) {
-        alert("Errore di connessione" + e.message);
-    }
+        const data = await res.json().catch(() => ({ message: res.statusText }));
 
+        if (res.status === 201) {
+            alert("✅ Registrazione avvenuta con successo!");
+        } else {
+            alert("❌ Errore registrazione: " + (data.message || JSON.stringify(data)));
+        }
+
+    } catch (e) {
+        alert("⚠️ Errore di connessione: " + e.message);
+    }
 });
 
 //LOGIN

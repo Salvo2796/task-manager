@@ -61,6 +61,7 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads'))); // imm
 
 
 // Rate limiter per autenticazione
+app.set('trust proxy', 1);
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minuti
