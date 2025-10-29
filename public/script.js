@@ -26,6 +26,7 @@ formRegister.addEventListener("submit", async (event) => {
 
         if (res.status === 201) {
             alert("✅ Registrazione avvenuta con successo!");
+            document.getElementById("form-register").reset();
         } else {
             alert("❌ Errore registrazione: " + (data.message || JSON.stringify(data)));
         }
@@ -60,6 +61,7 @@ btnLogin.addEventListener("click", async (event) => {
             const token = data.token;
             saveToken(token);
             alert(`Bentornato: ${data.email}`);
+            document.getElementById("form-login").reset();
         } else {
             alert(`Errore di login: ${data.message || "Credenziali non valide"}`);
         }
@@ -78,6 +80,14 @@ function saveToken(token) {
 function loadToken() {
     return localStorage.getItem("token")
 }
+
+//ELIMINA TOKEN
+function logout() {
+    localStorage.removeItem("token");
+    alert("🔒 Logout effettuato con successo!");
+}
+
+document.getElementById("logout").addEventListener("click", logout);
 
 //CREAZIONE TASK
 const btnCreateTask = document.getElementById("btn-createTask");
@@ -105,6 +115,7 @@ btnCreateTask.addEventListener("click", async (event) => {
 
         if (res.status === 201) {
             alert("Task creato");
+            document.getElementById("form-create-task").reset();
 
         } else {
             const err = await res.json().catch(() => ({ message: res.statusText }));
@@ -177,14 +188,12 @@ function renderTask(tasks) {
         btnDelete.textContent = "Elimina";
 
         const btnEdit = document.createElement("button");
-        btnEdit.textContent= "Edit";
-        
+        btnEdit.textContent = "Edit";
 
 
         ul.appendChild(btnDelete);
         ul.appendChild(btnEdit);
         container.appendChild(ul);
-
 
         btnDelete.addEventListener("click", async () => {
             deleteTask(t._id)
@@ -215,7 +224,7 @@ async function deleteTask(id) {
             loadTask();
         } else {
             const err = await res.json().catch(() => ({ message: res.statusText }));
-            showToast('Errore creazione: ' + (err.message || JSON.stringify(err)));
+            alert('Errore eliminazione: ' + (err.message || JSON.stringify(err)));
         }
     } catch (e) {
         alert("Errore: " + e.message)
@@ -225,36 +234,38 @@ async function deleteTask(id) {
 // Funzione per far comparire il FormaUpdate
 function renderFormUpdate(t) {
     document.getElementById("div-update").style.display = "block";
-      document.getElementById("id_task").value = t._id;
-      document.getElementById("title-update").value = t.title;
-      document.getElementById("description-update").value = t.description || "";
-      document.getElementById("completed-update").value = t.completed;
+    document.getElementById("id_task").value = t._id;
+    document.getElementById("title-update").value = t.title;
+    document.getElementById("description-update").value = t.description || "";
+    document.getElementById("completed-update").value = t.completed;
 }
 
 // 🔹 Funzione che invia la richiesta PATCH
 async function updateTask(id, updatedTask) {
-  try {
-    const token = loadToken();
+    try {
+        const token = loadToken();
 
-    const res = await fetch(`https://task-manager-yyyj.onrender.com/tasks/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify(updatedTask)
-    });
+        const res = await fetch(`https://task-manager-yyyj.onrender.com/tasks/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(updatedTask)
+        });
 
-    if (res.ok) {
-      alert("✅ Task aggiornata con successo!");
-    } else {
-      const err = await res.json().catch(() => ({ message: res.statusText }));
-      alert("❌ Errore aggiornamento: " + (err.message || JSON.stringify(err)));
+        if (res.ok) {
+            alert("✅ Task aggiornata con successo!");
+            const tasks = await loadTask(); // richiama tutti i task aggiornati
+            renderTask(tasks);
+        } else {
+            const err = await res.json().catch(() => ({ message: res.statusText }));
+            alert("❌ Errore aggiornamento: " + (err.message || JSON.stringify(err)));
+        }
+
+    } catch (e) {
+        alert("⚠️ Errore di rete: " + e.message);
     }
-
-  } catch (e) {
-    alert("⚠️ Errore di rete: " + e.message);
-  }
 }
 
 
@@ -262,17 +273,17 @@ async function updateTask(id, updatedTask) {
 const btnUpdate = document.getElementById("btn-update");
 
 btnUpdate.addEventListener("click", async () => {
-  const id = document.getElementById("id_task").value.trim();
-  const title = document.getElementById("title-update").value.trim();
-  const description = document.getElementById("description-update").value.trim();
-  const completed = document.getElementById("completed-update").value === "true";
+    const id = document.getElementById("id_task").value.trim();
+    const title = document.getElementById("title-update").value.trim();
+    const description = document.getElementById("description-update").value.trim();
+    const completed = document.getElementById("completed-update").value === "true";
 
-  const updatedTask = { title, description, completed };
+    const updatedTask = { title, description, completed };
 
-  await updateTask(id, updatedTask);
+    await updateTask(id, updatedTask);
 
-  document.getElementById("div-update").style.display = "none";
-  loadTask(); // 🔄 Ricarica la lista dei task aggiornati
+    document.getElementById("div-update").style.display = "none";
+    loadTask(); // 🔄 Ricarica la lista dei task aggiornati
 });
 
 
