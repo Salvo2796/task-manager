@@ -83,10 +83,6 @@ app.get('/task/health', (req, res) => {
   res.json({ status: 'ok' }); 
 });
 
-app.get('/', (req, res) => {
-  res.send('✅ Server online e funzionante!');
-});
-
 
 // Middleware 404
 
