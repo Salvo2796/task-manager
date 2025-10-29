@@ -1,5 +1,4 @@
 // Import e configurazioni
-
 const express = require('express');
 const connectDb = require("./config/db")
 const cors = require('cors');
@@ -42,8 +41,6 @@ app.use(cors({
   credentials: true
 }));
 
-
-
 app.use(express.json()); // Parse JSON nel body delle richieste
 
 // Logger richieste HTTP con morgan e logger custom
@@ -53,9 +50,8 @@ app.use(morgan("combined", {
   }
 }));
 
-
-
 // Servire file statici
+app.use(express.static("public"));
 
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads'))); // immagini task
 
